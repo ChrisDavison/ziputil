@@ -1,0 +1,97 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BZFILE	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^typedef void BZFILE;$/;"	t
+BZFILE	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^typedef void BZFILE;$/;"	t
+BZ_API	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	85;"	d
+BZ_API	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	89;"	d
+BZ_API	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	93;"	d
+BZ_API	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	85;"	d
+BZ_API	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	89;"	d
+BZ_API	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	93;"	d
+BZ_CONFIG_ERROR	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	46;"	d
+BZ_CONFIG_ERROR	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	46;"	d
+BZ_DATA_ERROR	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	41;"	d
+BZ_DATA_ERROR	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	41;"	d
+BZ_DATA_ERROR_MAGIC	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	42;"	d
+BZ_DATA_ERROR_MAGIC	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	42;"	d
+BZ_EXPORT	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	70;"	d
+BZ_EXPORT	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	70;"	d
+BZ_EXTERN	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	86;"	d
+BZ_EXTERN	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	90;"	d
+BZ_EXTERN	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	94;"	d
+BZ_EXTERN	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	86;"	d
+BZ_EXTERN	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	90;"	d
+BZ_EXTERN	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	94;"	d
+BZ_FINISH	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	31;"	d
+BZ_FINISH	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	31;"	d
+BZ_FINISH_OK	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	36;"	d
+BZ_FINISH_OK	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	36;"	d
+BZ_FLUSH	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	30;"	d
+BZ_FLUSH	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	30;"	d
+BZ_FLUSH_OK	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	35;"	d
+BZ_FLUSH_OK	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	35;"	d
+BZ_IO_ERROR	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	43;"	d
+BZ_IO_ERROR	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	43;"	d
+BZ_MAX_UNUSED	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	135;"	d
+BZ_MAX_UNUSED	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	135;"	d
+BZ_MEM_ERROR	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	40;"	d
+BZ_MEM_ERROR	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	40;"	d
+BZ_OK	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	33;"	d
+BZ_OK	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	33;"	d
+BZ_OUTBUFF_FULL	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	45;"	d
+BZ_OUTBUFF_FULL	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	45;"	d
+BZ_PARAM_ERROR	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	39;"	d
+BZ_PARAM_ERROR	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	39;"	d
+BZ_RUN	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	29;"	d
+BZ_RUN	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	29;"	d
+BZ_RUN_OK	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	34;"	d
+BZ_RUN_OK	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	34;"	d
+BZ_SEQUENCE_ERROR	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	38;"	d
+BZ_SEQUENCE_ERROR	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	38;"	d
+BZ_STREAM_END	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	37;"	d
+BZ_STREAM_END	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	37;"	d
+BZ_UNEXPECTED_EOF	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	44;"	d
+BZ_UNEXPECTED_EOF	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	44;"	d
+Opts	src/main.rs	/^struct Opts {$/;"	T
+Read	src/main.rs	/^    z: &mut zip::ZipArchive<impl Read + Seek>,$/;"	i
+Result	src/main.rs	/^type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;$/;"	T
+_BZLIB_H	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	23;"	d
+_BZLIB_H	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	23;"	d
+avail_in	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int avail_in;$/;"	m	struct:__anon2
+avail_in	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int avail_in;$/;"	m	struct:__anon1
+avail_out	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int avail_out;$/;"	m	struct:__anon2
+avail_out	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int avail_out;$/;"	m	struct:__anon1
+bz_stream	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^   bz_stream;$/;"	t	typeref:struct:__anon2
+bz_stream	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^   bz_stream;$/;"	t	typeref:struct:__anon1
+bzalloc	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      void *(*bzalloc)(void *,int,int);$/;"	m	struct:__anon2
+bzalloc	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void *(*bzalloc)(void *,int,int);$/;"	m	struct:__anon1
+bzfree	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      void (*bzfree)(void *,void *);$/;"	m	struct:__anon2
+bzfree	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void (*bzfree)(void *,void *);$/;"	m	struct:__anon1
+extract_files	src/main.rs	/^fn extract_files($/;"	f
+fuzzy_contains	src/main.rs	/^fn fuzzy_contains(s: &str, query: &[String]) -> bool {$/;"	f
+get_number_choices	src/main.rs	/^fn get_number_choices() -> Vec<usize> {$/;"	f
+main	src/main.rs	/^fn main() -> Result<()> {$/;"	f
+next_in	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      char *next_in;$/;"	m	struct:__anon2
+next_in	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      char *next_in;$/;"	m	struct:__anon1
+next_out	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      char *next_out;$/;"	m	struct:__anon2
+next_out	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      char *next_out;$/;"	m	struct:__anon1
+opaque	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      void *opaque;$/;"	m	struct:__anon2
+opaque	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void *opaque;$/;"	m	struct:__anon1
+parse_range	src/main.rs	/^fn parse_range(s: &str) -> Vec<usize> {$/;"	f
+read_from_stdin	src/main.rs	/^fn read_from_stdin(prompt: &str) -> String {$/;"	f
+small	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	82;"	d
+small	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	82;"	d
+state	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      void *state;$/;"	m	struct:__anon2
+state	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void *state;$/;"	m	struct:__anon1
+total_in_hi32	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int total_in_hi32;$/;"	m	struct:__anon2
+total_in_hi32	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int total_in_hi32;$/;"	m	struct:__anon1
+total_in_lo32	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int total_in_lo32;$/;"	m	struct:__anon2
+total_in_lo32	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int total_in_lo32;$/;"	m	struct:__anon1
+total_out_hi32	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int total_out_hi32;$/;"	m	struct:__anon2
+total_out_hi32	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int total_out_hi32;$/;"	m	struct:__anon1
+total_out_lo32	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int total_out_lo32;$/;"	m	struct:__anon2
+total_out_lo32	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int total_out_lo32;$/;"	m	struct:__anon1
