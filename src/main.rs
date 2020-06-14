@@ -72,7 +72,7 @@ fn extract_files(
         let mut fmatch = z.by_name(&name)?;
         let fullname = outdir.join(fmatch.name());
         let pp = fullname.parent().ok_or("No parent")?;
-        println!("{:?}", fullname);
+        println!("-- {:?}", fullname);
         if fmatch.is_dir() {
             create_dir_all(fullname)?;
         } else {
@@ -111,6 +111,7 @@ fn main() -> Result<()> {
         .collect();
     let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
     let dir_out = Path::new(&dirname);
+    println!("Exporting to '{}'", dirname);
     extract_files(&mut z, &to_take[..], &dir_out)?;
     Ok(())
 }
