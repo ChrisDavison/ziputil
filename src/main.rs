@@ -12,7 +12,7 @@ type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Chris Davison <c.jr.davison@gmail.com>")]
 struct Opts {
-    /// The command to run (choose or view)
+    /// The command to run (choose, list, or view)
     command: String,
     /// The zip file to view files from
     zipfile: String,
@@ -144,6 +144,11 @@ fn main() -> Result<()> {
             extract_files(&mut z, &to_take[..], &dir_out)?;
         }
         "view" => display_files(&mut z, &to_take[..])?,
+        "list" => {
+            for fname in to_take {
+                println!("{}", fname);
+            }
+        },
         _ => println!("Unrecognised command: {}", opts.command),
     }
 
