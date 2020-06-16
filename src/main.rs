@@ -4,13 +4,59 @@ use std::io::{stdin, stdout};
 use std::path::Path;
 use zip;
 
-use clap::Clap;
+use structopt::StructOpt;
 
 type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;
 
+#[allow(dead_code)]
+#[derive(Debug)]
+struct Filter {
+    any: bool,
+    ordered: bool,
+    query: Vec<String>,
+}
+
+#[allow(dead_code)]
+impl Filter {
+    pub fn new(any: bool, ordered: bool, query: Vec<String>) -> Filter {
+        Filter { any, ordered, query }
+    }
+
+    pub fn matches(&self, string: &str) -> bool {
+        if self.any {
+            self.anymatch(string)
+        } else {
+            self.fuzzymatch(string)
+        }
+    }
+
+    fn fuzzymatch (&self, string: &str) -> bool {
+        let mut idx = 0;
+        for word in &self.query {
+            // If ordered search, search from the match of the
+            // previous query forwards
+            // otherwise just search from start to end.
+            match string[idx..].find(word) {
+                Some(i) => idx = if self.ordered { i } else { 0 },
+                None => return false,
+            }
+        }
+        true
+    }
+
+    fn anymatch(&self, string: &str) -> bool {
+        for word in &self.query {
+            if let Some(_) = string.find(word) {
+                return true;
+            }
+        }
+        false
+    }
+}
+
 /// Choose zip files to operate on, based on a fuzzy query
-#[derive(Clap)]
-#[clap(version = "1.0", author = "Chris Davison <c.jr.davison@gmail.com>")]
+#[derive(StructOpt,Debug)]
+#[structopt(version = "1.0", author = "Chris Davison <c.jr.davison@gmail.com>")]
 struct Opts {
     /// The command to run (choose, list, or view)
     command: String,
@@ -18,20 +64,12 @@ struct Opts {
     zipfile: String,
     /// Word list to filter by
     query: Vec<String>,
-}
-
-fn fuzzy_contains(s: &str, query: &[String]) -> bool {
-    let mut idx = 0;
-    for word in query {
-        // Search for each word from current position onwards
-        // if any search fails, return false
-        match s[idx..].find(word) {
-            Some(i) => idx = i,
-            None => return false,
-        }
-    }
-    // If all sub-word searches complete, return true
-    true
+    /// Filter by 'any', rather than by 'all'
+    #[structopt(short, long)]
+    any: bool,
+    /// Allow fuzzy match in any order
+    #[structopt(short, long)]
+    unordered: bool,
 }
 
 fn parse_range(s: &str) -> Vec<usize> {
@@ -99,14 +137,14 @@ fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) ->
     Ok(())
 }
 
-fn get_matches(zipfile: &std::fs::File, query: &[String]) -> Result<Vec<String>> {
+fn get_matches(zipfile: &std::fs::File, filter: Filter) -> Result<Vec<String>> {
     let mut z = zip::ZipArchive::new(zipfile)?;
     println!("Matches");
     let mut matches = Vec::new();
     let mut j = 0;
     for i in 0..z.len() {
         let name = z.by_index(i).unwrap().name().to_string();
-        if fuzzy_contains(&name, query) {
+        if filter.matches(&name) {
             println!("{}. {}", j, name);
             j += 1;
         }
@@ -125,15 +163,17 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
 }
 
 fn main() -> Result<()> {
-    let opts: Opts = Opts::parse();
+    let opts: Opts = Opts::from_args();
     let query = if opts.query.is_empty() {
         let resp = read_from_stdin("Query: ");
         resp.split(" ").map(|x| x.to_string()).collect()
     } else {
         opts.query
     };
+
+    let filter = Filter::new(opts.any, !opts.unordered, query);
     let f = File::open(&opts.zipfile)?;
-    let matches = get_matches(&f, &query[..])?;
+    let matches = get_matches(&f, filter)?;
     let to_take = choose_from_vector(&matches);
     
     let mut z = zip::ZipArchive::new(f)?;

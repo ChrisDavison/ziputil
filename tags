@@ -56,12 +56,15 @@ BZ_STREAM_END	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	
 BZ_STREAM_END	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	37;"	d
 BZ_UNEXPECTED_EOF	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	44;"	d
 BZ_UNEXPECTED_EOF	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	44;"	d
+Filter	src/main.rs	/^impl Filter {$/;"	i
+Filter	src/main.rs	/^struct Filter {$/;"	T
 Opts	src/main.rs	/^struct Opts {$/;"	T
 Read	src/main.rs	/^    z: &mut zip::ZipArchive<impl Read + Seek>,$/;"	i
 Read	src/main.rs	/^fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {$/;"	i
 Result	src/main.rs	/^type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;$/;"	T
 _BZLIB_H	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	23;"	d
 _BZLIB_H	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	23;"	d
+anymatch	src/main.rs	/^    fn anymatch(&self, string: &str) -> bool {$/;"	f
 avail_in	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int avail_in;$/;"	m	struct:__anon2
 avail_in	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      unsigned int avail_in;$/;"	m	struct:__anon1
 avail_out	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      unsigned int avail_out;$/;"	m	struct:__anon2
@@ -75,10 +78,12 @@ bzfree	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^   
 choose_from_vector	src/main.rs	/^fn choose_from_vector(vector: &[String]) -> Vec<String> {$/;"	f
 display_files	src/main.rs	/^fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {$/;"	f
 extract_files	src/main.rs	/^fn extract_files($/;"	f
-fuzzy_contains	src/main.rs	/^fn fuzzy_contains(s: &str, query: &[String]) -> bool {$/;"	f
-get_matches	src/main.rs	/^fn get_matches(zipfile: &std::fs::File, query: &[String]) -> Result<Vec<String>> {$/;"	f
+fuzzymatch	src/main.rs	/^    fn fuzzymatch (&self, string: &str) -> bool {$/;"	f
+get_matches	src/main.rs	/^fn get_matches(zipfile: &std::fs::File, filter: Filter) -> Result<Vec<String>> {$/;"	f
 get_number_choices	src/main.rs	/^fn get_number_choices() -> Vec<usize> {$/;"	f
 main	src/main.rs	/^fn main() -> Result<()> {$/;"	f
+matches	src/main.rs	/^    pub fn matches(&self, string: &str) -> bool {$/;"	f
+new	src/main.rs	/^    pub fn new(any: bool, ordered: bool, query: Vec<String>) -> Filter {$/;"	f
 next_in	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      char *next_in;$/;"	m	struct:__anon2
 next_in	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      char *next_in;$/;"	m	struct:__anon1
 next_out	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      char *next_out;$/;"	m	struct:__anon2
