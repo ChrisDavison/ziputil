@@ -99,6 +99,31 @@ fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) ->
     Ok(())
 }
 
+fn get_matches(zipfile: &std::fs::File, query: &[String]) -> Result<Vec<String>> {
+    let mut z = zip::ZipArchive::new(zipfile)?;
+    println!("Matches");
+    let mut matches = Vec::new();
+    let mut j = 0;
+    for i in 0..z.len() {
+        let name = z.by_index(i).unwrap().name().to_string();
+        if fuzzy_contains(&name, query) {
+            println!("{}. {}", j, name);
+            j += 1;
+        }
+        matches.push(name.to_string());
+    }
+    Ok(matches)
+}
+
+fn choose_from_vector(vector: &[String]) -> Vec<String> {
+    let choices = get_number_choices();
+    let mut to_take = Vec::new();
+    for choice in choices {
+        to_take.push(vector[choice].to_string()); 
+    }
+    to_take
+}
+
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
     let query = if opts.query.is_empty() {
@@ -108,31 +133,18 @@ fn main() -> Result<()> {
         opts.query
     };
     let f = File::open(&opts.zipfile)?;
+    let matches = get_matches(&f, &query[..])?;
+    let to_take = choose_from_vector(&matches);
+    
     let mut z = zip::ZipArchive::new(f)?;
-    let matches: Vec<String> = (0..z.len())
-        .map(|i| z.by_index(i).unwrap().name().to_string())
-        .filter(|x| fuzzy_contains(x, &query))
-        .collect();
-    println!("Matches");
-    for (i, word) in matches.clone().iter().enumerate() {
-        println!("{}. {}", i, word);
-    }
-    let choices = get_number_choices();
-    let to_take: Vec<String> = matches
-        .iter()
-        .enumerate()
-        .filter(|(i, _x)| choices.contains(i))
-        .map(|(_i, x)| x.to_owned())
-        .collect();
     match opts.command.as_str() {
         "choose" => {
             let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
             let dir_out = Path::new(&dirname);
-            println!("Exporting to '{}'", dirname);
             extract_files(&mut z, &to_take[..], &dir_out)?;
         }
         "view" => display_files(&mut z, &to_take[..])?,
-        _ => println!("Unrecognised: {}", opts.command),
+        _ => println!("Unrecognised command: {}", opts.command),
     }
 
     Ok(())

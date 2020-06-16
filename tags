@@ -72,9 +72,11 @@ bzalloc	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^    
 bzalloc	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void *(*bzalloc)(void *,int,int);$/;"	m	struct:__anon1
 bzfree	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      void (*bzfree)(void *,void *);$/;"	m	struct:__anon2
 bzfree	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void (*bzfree)(void *,void *);$/;"	m	struct:__anon1
+choose_from_vector	src/main.rs	/^fn choose_from_vector(vector: &[String]) -> Vec<String> {$/;"	f
 display_files	src/main.rs	/^fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {$/;"	f
 extract_files	src/main.rs	/^fn extract_files($/;"	f
 fuzzy_contains	src/main.rs	/^fn fuzzy_contains(s: &str, query: &[String]) -> bool {$/;"	f
+get_matches	src/main.rs	/^fn get_matches(zipfile: &std::fs::File, query: &[String]) -> Result<Vec<String>> {$/;"	f
 get_number_choices	src/main.rs	/^fn get_number_choices() -> Vec<usize> {$/;"	f
 main	src/main.rs	/^fn main() -> Result<()> {$/;"	f
 next_in	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      char *next_in;$/;"	m	struct:__anon2
