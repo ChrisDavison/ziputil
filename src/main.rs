@@ -1,14 +1,21 @@
+use std::env;
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::{stdin, stdout};
 use std::path::Path;
 use zip;
 
-use structopt::StructOpt;
+use getopts::Options;
+
+const USAGE: &str = "Usage: ziputil command zipfile [query...]
+
+Commands:
+    choose - extract files matching query
+    view   - print chosen files to terminal
+    list   - list matching files";
 
 type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 struct Filter {
     any: bool,
@@ -16,10 +23,13 @@ struct Filter {
     query: Vec<String>,
 }
 
-#[allow(dead_code)]
 impl Filter {
     pub fn new(any: bool, ordered: bool, query: Vec<String>) -> Filter {
-        Filter { any, ordered, query }
+        Filter {
+            any,
+            ordered,
+            query,
+        }
     }
 
     pub fn matches(&self, string: &str) -> bool {
@@ -30,7 +40,7 @@ impl Filter {
         }
     }
 
-    fn fuzzymatch (&self, string: &str) -> bool {
+    fn fuzzymatch(&self, string: &str) -> bool {
         let mut idx = 0;
         for word in &self.query {
             // If ordered search, search from the match of the
@@ -52,24 +62,6 @@ impl Filter {
         }
         false
     }
-}
-
-/// Choose zip files to operate on, based on a fuzzy query
-#[derive(StructOpt,Debug)]
-#[structopt(version = "1.0", author = "Chris Davison <c.jr.davison@gmail.com>")]
-struct Opts {
-    /// The command to run (choose, list, or view)
-    command: String,
-    /// The zip file to view files from
-    zipfile: String,
-    /// Word list to filter by
-    query: Vec<String>,
-    /// Filter by 'any', rather than by 'all'
-    #[structopt(short, long)]
-    any: bool,
-    /// Allow fuzzy match in any order
-    #[structopt(short, long)]
-    unordered: bool,
 }
 
 fn parse_range(s: &str) -> Vec<usize> {
@@ -103,11 +95,9 @@ fn read_from_stdin(prompt: &str) -> String {
     response.trim().to_string()
 }
 
-fn extract_files(
-    z: &mut zip::ZipArchive<impl Read + Seek>,
-    names: &[String],
-    outdir: &Path,
-) -> Result<()> {
+fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
+    let f = File::open(&zipfile)?;
+    let mut z = zip::ZipArchive::new(f)?;
     for name in names {
         let mut fmatch = z.by_name(&name)?;
         let fullname = outdir.join(fmatch.name());
@@ -124,7 +114,9 @@ fn extract_files(
     Ok(())
 }
 
-fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {
+fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
+    let f = File::open(&zipfile)?;
+    let mut z = zip::ZipArchive::new(f)?;
     for (i, name) in names.iter().enumerate() {
         println!("{}\n", &name);
         let fmatch = z.by_name(&name)?;
@@ -137,8 +129,9 @@ fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) ->
     Ok(())
 }
 
-fn get_matches(zipfile: &std::fs::File, filter: Filter) -> Result<Vec<String>> {
-    let mut z = zip::ZipArchive::new(zipfile)?;
+fn get_matches(zipfile: &str, filter: Filter) -> Result<Vec<String>> {
+    let f = File::open(&zipfile)?;
+    let mut z = zip::ZipArchive::new(f)?;
     println!("Matches");
     let mut matches = Vec::new();
     let mut j = 0;
@@ -157,39 +150,48 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
     let choices = get_number_choices();
     let mut to_take = Vec::new();
     for choice in choices {
-        to_take.push(vector[choice].to_string()); 
+        to_take.push(vector[choice].to_string());
     }
     to_take
 }
 
 fn main() -> Result<()> {
-    let opts: Opts = Opts::from_args();
-    let query = if opts.query.is_empty() {
-        let resp = read_from_stdin("Query: ");
-        resp.split(" ").map(|x| x.to_string()).collect()
-    } else {
-        opts.query
-    };
+    let args: Vec<String> = env::args().collect();
 
-    let filter = Filter::new(opts.any, !opts.unordered, query);
-    let f = File::open(&opts.zipfile)?;
-    let matches = get_matches(&f, filter)?;
-    let to_take = choose_from_vector(&matches);
-    
-    let mut z = zip::ZipArchive::new(f)?;
-    match opts.command.as_str() {
+    let mut opts = Options::new();
+    opts.optflag("a", "any", "Use 'any' rather than 'all' filter");
+    opts.optflag("u", "unordered", "Don't require query to be found in order");
+    opts.optflag("h", "help", "Print this help menu");
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => m,
+        Err(f) => panic!(f.to_string()),
+    };
+    if matches.opt_present("h") {
+        print!("{}", opts.usage(&USAGE));
+        return Ok(());
+    }
+    let command = &args[1];
+    let zipfile = &args[2];
+    let query = args[3..].to_vec();
+    let any = matches.opt_present("a");
+    let ordered = !matches.opt_present("u");
+
+    let filter = Filter::new(any, ordered, query);
+    let matches = get_matches(&zipfile, filter)?;
+
+    match command.as_str() {
         "choose" => {
-            let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
+            let to_take = choose_from_vector(&matches);
+            let dirname = format!("files-from-{}", zipfile.replace(".", "-"));
             let dir_out = Path::new(&dirname);
-            extract_files(&mut z, &to_take[..], &dir_out)?;
+            extract_files(&zipfile, &to_take[..], &dir_out)?;
         }
-        "view" => display_files(&mut z, &to_take[..])?,
-        "list" => {
-            for fname in to_take {
-                println!("{}", fname);
-            }
-        },
-        _ => println!("Unrecognised command: {}", opts.command),
+        "view" => {
+            let to_take = choose_from_vector(&matches);
+            display_files(&zipfile, &to_take[..])?;
+        }
+        "list" => {},
+        _ => println!("Unrecognised command: {}", command),
     }
 
     Ok(())

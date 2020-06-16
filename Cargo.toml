@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 zip="0.5.5"
-structopt="0.3.14"
+getopts="0.2.21"
