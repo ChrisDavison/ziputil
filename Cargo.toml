@@ -1,5 +1,5 @@
 [package]
-name = "zipchoose"
+name = "ziputil"
 version = "0.1.0"
 authors = ["Chris Davison <c.jr.davison@gmail.com>"]
 edition = "2018"

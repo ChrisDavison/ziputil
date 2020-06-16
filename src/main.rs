@@ -1,6 +1,6 @@
+use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
-use std::io::{stdout,stdin};
-use std::fs::{File,create_dir_all};
+use std::io::{stdin, stdout};
 use std::path::Path;
 use zip;
 
@@ -8,10 +8,12 @@ use clap::Clap;
 
 type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;
 
-/// Choose zip files to extract, based on a fuzzy query
+/// Choose zip files to operate on, based on a fuzzy query
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Chris Davison <c.jr.davison@gmail.com>")]
 struct Opts {
+    /// The command to run (choose or view)
+    command: String,
     /// The zip file to view files from
     zipfile: String,
     /// Word list to filter by
@@ -84,6 +86,19 @@ fn extract_files(
     Ok(())
 }
 
+fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {
+    for (i, name) in names.iter().enumerate() {
+        println!("{}\n", &name);
+        let fmatch = z.by_name(&name)?;
+        let mut bufr = std::io::BufReader::new(fmatch);
+        std::io::copy(&mut bufr, &mut stdout())?;
+        if i != names.len() {
+            println!("{}", "-".repeat(20));
+        }
+    }
+    Ok(())
+}
+
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
     let query = if opts.query.is_empty() {
@@ -109,9 +124,16 @@ fn main() -> Result<()> {
         .filter(|(i, _x)| choices.contains(i))
         .map(|(_i, x)| x.to_owned())
         .collect();
-    let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
-    let dir_out = Path::new(&dirname);
-    println!("Exporting to '{}'", dirname);
-    extract_files(&mut z, &to_take[..], &dir_out)?;
+    match opts.command.as_str() {
+        "choose" => {
+            let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
+            let dir_out = Path::new(&dirname);
+            println!("Exporting to '{}'", dirname);
+            extract_files(&mut z, &to_take[..], &dir_out)?;
+        }
+        "view" => display_files(&mut z, &to_take[..])?,
+        _ => println!("Unrecognised: {}", opts.command),
+    }
+
     Ok(())
 }

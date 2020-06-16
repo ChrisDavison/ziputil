@@ -58,6 +58,7 @@ BZ_UNEXPECTED_EOF	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzli
 BZ_UNEXPECTED_EOF	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	44;"	d
 Opts	src/main.rs	/^struct Opts {$/;"	T
 Read	src/main.rs	/^    z: &mut zip::ZipArchive<impl Read + Seek>,$/;"	i
+Read	src/main.rs	/^fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {$/;"	i
 Result	src/main.rs	/^type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;$/;"	T
 _BZLIB_H	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	23;"	d
 _BZLIB_H	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	23;"	d
@@ -71,6 +72,7 @@ bzalloc	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^    
 bzalloc	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void *(*bzalloc)(void *,int,int);$/;"	m	struct:__anon1
 bzfree	target/debug/build/bzip2-sys-1048c2c90524eb53/out/include/bzlib.h	/^      void (*bzfree)(void *,void *);$/;"	m	struct:__anon2
 bzfree	target/release/build/bzip2-sys-0c3ba160a9337a90/out/include/bzlib.h	/^      void (*bzfree)(void *,void *);$/;"	m	struct:__anon1
+display_files	src/main.rs	/^fn display_files(z: &mut zip::ZipArchive<impl Read + Seek>, names: &[String]) -> Result<()> {$/;"	f
 extract_files	src/main.rs	/^fn extract_files($/;"	f
 fuzzy_contains	src/main.rs	/^fn fuzzy_contains(s: &str, query: &[String]) -> bool {$/;"	f
 get_number_choices	src/main.rs	/^fn get_number_choices() -> Vec<usize> {$/;"	f
