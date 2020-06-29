@@ -5,8 +5,6 @@ use std::io::{stdin, stdout};
 use std::path::Path;
 use zip;
 
-use getopts::Options;
-
 const USAGE: &str = "Usage: ziputil command zipfile [query...]
 
 Commands:
@@ -156,25 +154,24 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
 }
 
 fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().skip(1)
+        .filter(|x| !x.starts_with('-')).collect();
 
-    let mut opts = Options::new();
-    opts.optflag("a", "any", "Use 'any' rather than 'all' filter");
-    opts.optflag("u", "unordered", "Don't require query to be found in order");
-    opts.optflag("h", "help", "Print this help menu");
-    let matches = match opts.parse(&args[1..]) {
-        Ok(m) => m,
-        Err(f) => panic!(f.to_string()),
-    };
-    if matches.opt_present("h") {
-        print!("{}", opts.usage(&USAGE));
+    let flags: Vec<String> = env::args().skip(1)
+        .filter(|x| x.starts_with('-')).collect();
+    
+    let wants_help = flags.contains(&"-h".to_string()) || flags.contains(&"--help".to_string()) ;
+    if args.len() < 3 || wants_help {
+        print!("{}", &USAGE);
         return Ok(());
     }
+
     let command = &args[1];
     let zipfile = &args[2];
     let query = args[3..].to_vec();
-    let any = matches.opt_present("a");
-    let ordered = !matches.opt_present("u");
+
+    let any = flags.contains(&"-a".to_string()) || flags.contains(&"--any".to_string()) ;
+    let ordered = !flags.contains(&"-u".to_string()) || flags.contains(&"--unordered".to_string()) ;
 
     let filter = Filter::new(any, ordered, query);
     let matches = get_matches(&zipfile, filter)?;
