@@ -5,14 +5,14 @@ use std::io::{stdin, stdout};
 use std::path::Path;
 use zip;
 
+use anyhow::Context;
+
 const USAGE: &str = "Usage: ziputil command zipfile [query...]
 
 Commands:
     choose - extract files matching query
     view   - print chosen files to terminal
     list   - list matching files";
-
-type Result<T> = std::result::Result<T, Box<dyn ::std::error::Error>>;
 
 #[derive(Debug)]
 struct Filter {
@@ -93,13 +93,13 @@ fn read_from_stdin(prompt: &str) -> String {
     response.trim().to_string()
 }
 
-fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
+fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> anyhow::Result<()> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for name in names {
         let mut fmatch = z.by_name(&name)?;
         let fullname = outdir.join(fmatch.name());
-        let pp = fullname.parent().ok_or("No parent")?;
+        let pp = fullname.parent().with_context(|| "No parent")?;
         println!("-- {:?}", fullname);
         if fmatch.is_dir() {
             create_dir_all(fullname)?;
@@ -112,7 +112,7 @@ fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
     Ok(())
 }
 
-fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
+fn display_files(zipfile: &str, names: &[String]) -> anyhow::Result<()> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for (i, name) in names.iter().enumerate() {
@@ -127,7 +127,7 @@ fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
     Ok(())
 }
 
-fn get_matches(zipfile: &str, filter: Filter) -> Result<Vec<String>> {
+fn get_matches(zipfile: &str, filter: Filter) -> anyhow::Result<Vec<String>> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     println!("Matches");
@@ -153,7 +153,7 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
     to_take
 }
 
-fn main() -> Result<()> {
+fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().skip(1)
         .filter(|x| !x.starts_with('-')).collect();
 
