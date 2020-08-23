@@ -1,18 +1,29 @@
-use std::env;
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::{stdin, stdout};
 use std::path::Path;
 use zip;
 
+use structopt::StructOpt;
+
 use anyhow::Context;
 
-const USAGE: &str = "Usage: ziputil command zipfile [query...]
-
-Commands:
-    choose - extract files matching query
-    view   - print chosen files to terminal
-    list   - list matching files";
+#[derive(StructOpt, Debug)]
+#[structopt(name = "ziputil")]
+struct Opt {
+    /// What to do with the zip file (choose, view, or list)
+    command: String,
+    /// Zip file
+    zipfile: String,
+    /// Query to match file titles
+    query: Vec<String>,
+    /// Order files alphabetically
+    #[structopt(short, long)]
+    ordered: bool,
+    /// Match any, rather than all, queries
+    #[structopt(short, long)]
+    any: bool,
+}
 
 #[derive(Debug)]
 struct Filter {
@@ -154,41 +165,23 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
 }
 
 fn main() -> anyhow::Result<()> {
-    let args: Vec<String> = env::args().skip(1)
-        .filter(|x| !x.starts_with('-')).collect();
+    let opts = Opt::from_args();
+    let filter = Filter::new(opts.any, opts.ordered, opts.query);
+    let matches = get_matches(&opts.zipfile, filter)?;
 
-    let flags: Vec<String> = env::args().skip(1)
-        .filter(|x| x.starts_with('-')).collect();
-    
-    let wants_help = flags.contains(&"-h".to_string()) || flags.contains(&"--help".to_string()) ;
-    if args.len() < 3 || wants_help {
-        print!("{}", &USAGE);
-        return Ok(());
-    }
-
-    let command = &args[1];
-    let zipfile = &args[2];
-    let query = args[3..].to_vec();
-
-    let any = flags.contains(&"-a".to_string()) || flags.contains(&"--any".to_string()) ;
-    let ordered = !flags.contains(&"-u".to_string()) || flags.contains(&"--unordered".to_string()) ;
-
-    let filter = Filter::new(any, ordered, query);
-    let matches = get_matches(&zipfile, filter)?;
-
-    match command.as_str() {
+    match opts.command.as_ref() {
         "choose" => {
             let to_take = choose_from_vector(&matches);
-            let dirname = format!("files-from-{}", zipfile.replace(".", "-"));
+            let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
             let dir_out = Path::new(&dirname);
-            extract_files(&zipfile, &to_take[..], &dir_out)?;
+            extract_files(&opts.zipfile, &to_take[..], &dir_out)?;
         }
         "view" => {
             let to_take = choose_from_vector(&matches);
-            display_files(&zipfile, &to_take[..])?;
+            display_files(&opts.zipfile, &to_take[..])?;
         }
-        "list" => {},
-        _ => println!("Unrecognised command: {}", command),
+        "list" => {}
+        _ => println!("Unrecognised command: {}", opts.command),
     }
 
     Ok(())
