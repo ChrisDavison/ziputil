@@ -6,7 +6,7 @@ use zip;
 
 use structopt::StructOpt;
 
-use anyhow::Context;
+use anyhow::{Context, Result};
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "ziputil")]
@@ -104,7 +104,7 @@ fn read_from_stdin(prompt: &str) -> String {
     response.trim().to_string()
 }
 
-fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> anyhow::Result<()> {
+fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for name in names {
@@ -123,7 +123,7 @@ fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> anyhow::Resu
     Ok(())
 }
 
-fn display_files(zipfile: &str, names: &[String]) -> anyhow::Result<()> {
+fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for (i, name) in names.iter().enumerate() {
@@ -138,7 +138,7 @@ fn display_files(zipfile: &str, names: &[String]) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn get_matches(zipfile: &str, filter: Filter) -> anyhow::Result<Vec<String>> {
+fn get_matches(zipfile: &str, filter: Filter) -> Result<Vec<String>> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     println!("Matches");
@@ -164,7 +164,7 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
     to_take
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let opts = Opt::from_args();
     let filter = Filter::new(opts.any, opts.ordered, opts.query);
     let matches = get_matches(&opts.zipfile, filter)?;
