@@ -2,7 +2,6 @@ use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::{stdin, stdout};
 use std::path::Path;
-use zip;
 
 use structopt::StructOpt;
 
@@ -65,7 +64,7 @@ impl Filter {
 
     fn anymatch(&self, string: &str) -> bool {
         for word in &self.query {
-            if let Some(_) = string.find(word) {
+            if string.contains(word) {
                 return true;
             }
         }
@@ -75,7 +74,7 @@ impl Filter {
 
 fn parse_range(s: &str) -> Vec<usize> {
     let start_and_end = s
-        .split("-")
+        .split('-')
         .map(|x| x.parse().unwrap())
         .collect::<Vec<usize>>();
     let start = start_and_end[0];
@@ -86,8 +85,8 @@ fn parse_range(s: &str) -> Vec<usize> {
 fn get_number_choices() -> Vec<usize> {
     let response = read_from_stdin("Choices: ");
     let mut nums = Vec::new();
-    for num in response.trim().split(" ") {
-        if num.contains("-") {
+    for num in response.trim().split(' ') {
+        if num.contains('-') {
             nums.extend(parse_range(num));
         } else {
             nums.push(num.parse().unwrap())
