@@ -1,5 +1,7 @@
 # ziputil
 
+[![Rust](https://github.com/ChrisDavison/ziputil/actions/workflows/rust.yml/badge.svg)](https://github.com/ChrisDavison/ziputil/actions/workflows/rust.yml)
+
 This is a little utility to help you get files out of a `zip` without having to extract every file.
 
 Currently, there are three commands:
