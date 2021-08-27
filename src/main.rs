@@ -107,7 +107,7 @@ fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for name in names {
-        let mut fmatch = z.by_name(&name)?;
+        let mut fmatch = z.by_name(name)?;
         let fullname = outdir.join(fmatch.name());
         let pp = fullname.parent().with_context(|| "No parent")?;
         println!("-- {:?}", fullname);
@@ -127,7 +127,7 @@ fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
     let mut z = zip::ZipArchive::new(f)?;
     for (i, name) in names.iter().enumerate() {
         println!("{}\n", &name);
-        let fmatch = z.by_name(&name)?;
+        let fmatch = z.by_name(name)?;
         let mut bufr = std::io::BufReader::new(fmatch);
         std::io::copy(&mut bufr, &mut stdout())?;
         if i != names.len() {
@@ -173,7 +173,7 @@ fn main() -> Result<()> {
             let to_take = choose_from_vector(&matches);
             let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
             let dir_out = Path::new(&dirname);
-            extract_files(&opts.zipfile, &to_take[..], &dir_out)?;
+            extract_files(&opts.zipfile, &to_take[..], dir_out)?;
         }
         "view" => {
             let to_take = choose_from_vector(&matches);
