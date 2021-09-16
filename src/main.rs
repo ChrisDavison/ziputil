@@ -1,28 +1,8 @@
+use anyhow::{Context, Result};
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::{stdin, stdout};
 use std::path::{Path, PathBuf};
-
-use structopt::StructOpt;
-
-use anyhow::{Context, Result};
-
-#[derive(StructOpt, Debug)]
-#[structopt(name = "ziputil")]
-struct Opt {
-    /// What to do with the zip file (choose, view, or list)
-    command: String,
-    /// Zip file
-    zipfile: String,
-    /// Query to match file titles
-    query: Vec<String>,
-    /// Order files alphabetically
-    #[structopt(short, long)]
-    ordered: bool,
-    /// Match any, rather than all, queries
-    #[structopt(short, long)]
-    any: bool,
-}
 
 #[derive(Debug)]
 struct Filter {
@@ -137,21 +117,25 @@ fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
     Ok(())
 }
 
-fn get_matches(zipfile: &str, filter: Filter) -> Result<Vec<String>> {
+fn get_matches(zipfile: &str, filter: Filter) -> Result<Option<Vec<String>>> {
     let f = File::open(&zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
-    println!("Matches");
     let mut matches = Vec::new();
-    let mut j = 0;
     for i in 0..z.len() {
         let name = z.by_index(i).unwrap().name().to_string();
         if filter.matches(&name) {
-            println!("{}. {}", j, name);
-            j += 1;
             matches.push(name.to_string());
         }
     }
-    Ok(matches)
+    if !matches.is_empty() {
+        println!("Matches");
+        for (i, m) in matches.iter().enumerate() {
+            println!("{}. {}", i, m);
+        }
+        Ok(Some(matches))
+    } else {
+        Ok(None)
+    }
 }
 
 fn choose_from_vector(vector: &[String]) -> Vec<String> {
@@ -164,29 +148,93 @@ fn choose_from_vector(vector: &[String]) -> Vec<String> {
 }
 
 fn main() -> Result<()> {
-    let opts = Opt::from_args();
-    let filter = Filter::new(opts.any, opts.ordered, opts.query);
-    let matches = get_matches(&opts.zipfile, filter)?;
+    let (command, zipfile, filter) = parse_args()?;
+    let matches = match get_matches(&zipfile, filter)? {
+        Some(m) => m,
+        None => {
+            println!("No matching files in zipfile.");
+            std::process::exit(0);
+        }
+    };
 
-    match opts.command.as_ref() {
-        "choose" => {
+    match command {
+        Command::List => display_files(&zipfile, &matches)?,
+        Command::Choose => {
             let to_take = choose_from_vector(&matches);
-            let zip_name = PathBuf::from(&opts.zipfile)
+            let zip_name = PathBuf::from(&zipfile)
                 .file_name()
                 .unwrap()
                 .to_string_lossy()
                 .to_string();
             let dirname = format!("ziputil-extraction/{}", zip_name);
             let dir_out = Path::new(&dirname);
-            extract_files(&opts.zipfile, &to_take[..], dir_out)?;
+            extract_files(&zipfile, &to_take[..], dir_out)?;
         }
-        "view" => {
+        Command::View => {
             let to_take = choose_from_vector(&matches);
-            display_files(&opts.zipfile, &to_take[..])?;
+            display_files(&zipfile, &to_take[..])?;
         }
-        "list" => {}
-        _ => println!("Unrecognised command: {}", opts.command),
     }
 
     Ok(())
+}
+
+#[derive(Debug)]
+enum Command {
+    Choose,
+    View,
+    List,
+}
+
+const USAGE: &'static str = "usage: ziputil <command> <zipfile> [args] [query]...
+
+Utility for listing, cat-ing, or extracting specific files from a zip archive.
+
+Arguments:
+    zipfile         a zip archive
+    -o --ordered    query terms must be matched IN ORDER
+    -a --any        match ANY, rather than ALL, queries
+
+Commands:
+    list       display files in zip archive matching QUERY...
+    view       cat files in zip archive matching QUERY...
+    choose     extract files in zip archive matching QUERY...";
+
+fn parse_args() -> Result<(Command, String, Filter)> {
+    let mut pargs = pico_args::Arguments::from_env();
+
+    if pargs.contains(["-h", "--help"]) {
+        println!("{}", USAGE);
+        std::process::exit(0);
+    }
+
+    let ordered = pargs.contains(["-o", "--ordered"]);
+    let any = pargs.contains(["-a", "--any"]);
+
+    let command = match pargs.subcommand()?.as_deref() {
+        Some("choose") => Command::Choose,
+        Some("view") => Command::View,
+        Some("list") => Command::List,
+        Some(unrecognised) => {
+            println!("Unrecognised command: {:#?}\n", unrecognised);
+            println!("{}", USAGE);
+            std::process::exit(1);
+        }
+        _ => {
+            println!("{}", USAGE);
+            std::process::exit(1);
+        }
+    };
+
+    let zipfile: String = pargs.free_from_str()?;
+
+    let query = pargs
+        .finish()
+        .iter()
+        .map(|x| x.to_string_lossy().to_string())
+        .collect();
+
+    let filter = Filter::new(any, ordered, query);
+
+    Ok((command, zipfile, filter))
 }
