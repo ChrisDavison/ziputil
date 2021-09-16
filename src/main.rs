@@ -1,7 +1,7 @@
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::{stdin, stdout};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use structopt::StructOpt;
 
@@ -148,8 +148,8 @@ fn get_matches(zipfile: &str, filter: Filter) -> Result<Vec<String>> {
         if filter.matches(&name) {
             println!("{}. {}", j, name);
             j += 1;
+            matches.push(name.to_string());
         }
-        matches.push(name.to_string());
     }
     Ok(matches)
 }
@@ -171,7 +171,12 @@ fn main() -> Result<()> {
     match opts.command.as_ref() {
         "choose" => {
             let to_take = choose_from_vector(&matches);
-            let dirname = format!("files-from-{}", opts.zipfile.replace(".", "-"));
+            let zip_name = PathBuf::from(&opts.zipfile)
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .to_string();
+            let dirname = format!("ziputil-extraction/{}", zip_name);
             let dir_out = Path::new(&dirname);
             extract_files(&opts.zipfile, &to_take[..], dir_out)?;
         }
