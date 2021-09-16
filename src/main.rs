@@ -158,7 +158,8 @@ fn main() -> Result<()> {
     };
 
     match command {
-        Command::List => display_files(&zipfile, &matches)?,
+        // List is a noop, as matches get printed during filtering
+        Command::List => {}
         Command::Choose => {
             let to_take = choose_from_vector(&matches);
             let zip_name = PathBuf::from(&zipfile)

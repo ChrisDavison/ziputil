@@ -10,14 +10,4 @@ Currently, there are three commands:
 - choose -- list files in the zip and extract a choice
 - view -- list files in the zip and then `cat` (basically only useful for plaintext, where _plaintext notes backups_ was my primary usecase)
 
-*list*
-
-![](screenshots/list.png)
-
-*view*
-
-![](screenshots/view.png)
-
-*choose*
-
-![](screenshots/choose.png)
+![](screenshots/ziputil.png)
