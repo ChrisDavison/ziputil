@@ -17,4 +17,4 @@ panic = 'abort'
 [dependencies]
 zip="0.5.5"
 anyhow = "1.0.31"
-pico-args = "*"
+pico-args = "0.4.2"
