@@ -1,60 +1,32 @@
-use anyhow::{Context, Result};
-use std::path::{Path, PathBuf};
+use anyhow::Result;
 
+mod command;
 mod filter;
 mod utility;
 
+use command::Command;
 use filter::Filter;
 
 fn main() {
-    if let Err(e) = try_main() {
-        println!("{}", e);
-    }
-}
-
-fn try_main() -> Result<()> {
-    let (command, zipfile, filter) = parse_args()?;
-    let matches = match filter.filter_zip_by_name(&zipfile)? {
-        Some(m) => m,
-        None => {
-            println!("No matching files in zipfile.");
-            std::process::exit(0);
+    let (command, zipfile, filter) = match parse_args() {
+        Ok((c, z, f)) => (c, z, f),
+        Err(e) => {
+            println!("{}", e);
+            std::process::exit(1);
         }
     };
 
-    println!("Matches");
-    for (i, m) in matches.iter().enumerate() {
-        println!("{}. {}", i, m);
+    let matches = if let Ok(Some(m)) = filter.filter_zip_by_name(&zipfile) {
+        m
+    } else {
+        println!("No matching files in zipfile.");
+        std::process::exit(1);
+    };
+
+    if let Err(e) = command.execute(&matches, zipfile) {
+        println!("{}", e);
+        std::process::exit(3);
     }
-
-    match command {
-        // List is a noop, as matches get printed during filtering
-        Command::List => {}
-        Command::Choose => {
-            let to_take = utility::choose_from_vector(&matches)?;
-            let zip_name = PathBuf::from(&zipfile)
-                .file_name()
-                .context("Couldn't get zip filename")?
-                .to_string_lossy()
-                .to_string();
-            let dirname = format!("ziputil-extraction/{}", zip_name);
-            let dir_out = Path::new(&dirname);
-            utility::extract_files(&zipfile, &to_take[..], dir_out)?;
-        }
-        Command::View => {
-            let to_take = utility::choose_from_vector(&matches)?;
-            utility::display_files(&zipfile, &to_take[..])?;
-        }
-    }
-
-    Ok(())
-}
-
-#[derive(Debug)]
-enum Command {
-    Choose,
-    View,
-    List,
 }
 
 const USAGE: &str = "usage: ziputil <command> <zipfile> [args] [query]...
