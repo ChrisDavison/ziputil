@@ -1,6 +1,6 @@
 [package]
 name = "ziputil"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Chris Davison <c.jr.davison@gmail.com>"]
 edition = "2018"
 description = "Easily access or view specific files within a zip"
