@@ -36,7 +36,7 @@ fn read_from_stdin(prompt: &str) -> Result<String> {
 }
 
 pub fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
-    let f = File::open(&zipfile)?;
+    let f = File::open(zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for name in names {
         let mut fmatch = z.by_name(name)?;
@@ -55,7 +55,7 @@ pub fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<(
 }
 
 pub fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
-    let f = File::open(&zipfile)?;
+    let f = File::open(zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for (i, name) in names.iter().enumerate() {
         println!("{}\n", &name);

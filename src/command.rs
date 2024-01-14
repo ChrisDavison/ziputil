@@ -16,19 +16,19 @@ impl Command {
             Command::List => Command::display_matches(matches),
             Command::Choose => {
                 Command::display_matches(matches)?;
-                let to_take = utility::choose_from_vector(&matches)?;
+                let to_take = utility::choose_from_vector(matches)?;
                 let zip_name = PathBuf::from(&zipfile)
                     .file_name()
                     .context("Couldn't get zip filename")?
                     .to_string_lossy()
                     .to_string();
-                let dirname = format!("ziputil-extraction/{}", zip_name);
+                let dirname = format!("extracted_from_{}", zip_name);
                 let dir_out = PathBuf::from(&dirname);
                 utility::extract_files(&zipfile, &to_take[..], &dir_out)
             }
             Command::View => {
                 Command::display_matches(matches)?;
-                let to_take = utility::choose_from_vector(&matches)?;
+                let to_take = utility::choose_from_vector(matches)?;
                 utility::display_files(&zipfile, &to_take[..])
             }
         }
@@ -38,7 +38,7 @@ impl Command {
         if matches.is_empty() {
             return Ok(());
         }
-        println!("Matches");
+        // println!("Matches");
         for (i, m) in matches.iter().enumerate() {
             println!("{}. {}", i, m);
         }

@@ -9,6 +9,13 @@ pub struct Filter {
     query: Vec<String>,
 }
 
+const EXCLUDES: [&str; 4] = [
+    "__MACOSX",
+    "Thumbs.db",
+    ".gitignore",
+    ".stignore",
+];
+
 impl Filter {
     pub fn new(any: bool, ordered: bool, query: Vec<String>) -> Filter {
         Filter {
@@ -42,6 +49,15 @@ impl Filter {
         true
     }
 
+    fn not_excluded(&self, string: &str) -> bool {
+        for word in EXCLUDES {
+            if string.find(word).is_some() {
+                return false;
+            }
+        }
+        return true;
+    }
+
     fn anymatch(&self, string: &str) -> bool {
         for word in &self.query {
             if string.contains(word) {
@@ -54,13 +70,13 @@ impl Filter {
     }
 
     pub fn filter_zip_by_name(&self, zipfile: &str) -> Result<Option<Vec<String>>> {
-        let f = File::open(&zipfile)?;
+        let f = File::open(zipfile)?;
         let mut z = zip::ZipArchive::new(f)?;
         let mut matches = Vec::new();
         for i in 0..z.len() {
             let entry = z.by_index(i)?;
             let name = entry.name().to_string();
-            if self.matches(&name) {
+            if self.matches(&name) && self.not_excluded(&name) && !entry.is_dir() {
                 matches.push(name);
             }
         }
