@@ -41,7 +41,8 @@ Arguments:
 Commands:
     list       display files in zip archive matching QUERY...
     view       cat files in zip archive matching QUERY...
-    choose     extract files in zip archive matching QUERY...";
+    choose     extract files in zip archive matching QUERY...
+    extract    extract all files";
 
 fn parse_args() -> Result<(Command, String, Filter)> {
     let mut pargs = pico_args::Arguments::from_env();
@@ -58,6 +59,7 @@ fn parse_args() -> Result<(Command, String, Filter)> {
         Some("choose") => Command::Choose,
         Some("view") => Command::View,
         Some("list") => Command::List,
+        Some("extract") => Command::Extract,
         Some(unrecognised) => {
             println!("Unrecognised command: {:#?}\n", unrecognised);
             println!("{}", USAGE);

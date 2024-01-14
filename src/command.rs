@@ -7,6 +7,7 @@ pub enum Command {
     Choose,
     View,
     List,
+    Extract,
 }
 
 impl Command {
@@ -14,6 +15,16 @@ impl Command {
         match self {
             // List is a noop, as matches get printed during filtering
             Command::List => Command::display_matches(matches),
+            Command::Extract => {
+                let zip_name = PathBuf::from(&zipfile)
+                    .file_name()
+                    .context("Couldn't get zip filename")?
+                    .to_string_lossy()
+                    .to_string();
+                let dirname = format!("extracted_from_{}", zip_name);
+                let dir_out = PathBuf::from(&dirname);
+                utility::extract_files(&zipfile, &matches[..], &dir_out)
+            },
             Command::Choose => {
                 Command::display_matches(matches)?;
                 let to_take = utility::choose_from_vector(matches)?;
