@@ -35,7 +35,7 @@ fn read_from_stdin(prompt: &str) -> Result<String> {
     Ok(response.trim().to_string())
 }
 
-pub fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<()> {
+pub fn extract_files(zipfile: &std::path::PathBuf, names: &[String], outdir: &Path) -> Result<()> {
     let f = File::open(zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for name in names {
@@ -54,7 +54,7 @@ pub fn extract_files(zipfile: &str, names: &[String], outdir: &Path) -> Result<(
     Ok(())
 }
 
-pub fn display_files(zipfile: &str, names: &[String]) -> Result<()> {
+pub fn display_files(zipfile: &std::path::PathBuf, names: &[String]) -> Result<()> {
     let f = File::open(zipfile)?;
     let mut z = zip::ZipArchive::new(f)?;
     for (i, name) in names.iter().enumerate() {

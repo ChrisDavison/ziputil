@@ -51,11 +51,11 @@ impl Filter {
 
     fn not_excluded(&self, string: &str) -> bool {
         for word in EXCLUDES {
-            if string.find(word).is_some() {
+            if string.contains(word) {
                 return false;
             }
         }
-        return true;
+        true
     }
 
     fn anymatch(&self, string: &str) -> bool {
@@ -69,7 +69,7 @@ impl Filter {
         false
     }
 
-    pub fn filter_zip_by_name(&self, zipfile: &str) -> Result<Option<Vec<String>>> {
+    pub fn filter_zip_by_name(&self, zipfile: &std::path::PathBuf) -> Result<Option<Vec<String>>> {
         let f = File::open(zipfile)?;
         let mut z = zip::ZipArchive::new(f)?;
         let mut matches = Vec::new();
