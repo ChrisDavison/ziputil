@@ -12,56 +12,62 @@ use structopt::StructOpt;
 struct Opts {
     #[structopt(subcommand)]
     command: OptCommand,
-    /// query terms must be matched IN ORDER
-    #[structopt(long, short)]
-    ordered: bool,
-    /// match ANY, rather than ALL, queries
-    #[structopt(long, short)]
-    any: bool,
-    /// Zipfile to search
-    zipfile: std::path::PathBuf,
-    /// Query to match
-    query: Vec<String>,
 }
 
 #[derive(Debug, StructOpt)]
 enum OptCommand {
     /// Cat files matching query to stdout (dumb)
     #[structopt(alias = "v")]
-    View,
+    View(CommonArgs),
     /// List files matching query
     #[structopt(alias = "l")]
-    List,
+    List(CommonArgs),
     /// Choose files to extract
     #[structopt(alias = "c")]
-    Choose,
+    Choose(CommonArgs),
     /// Extract all files
     #[structopt(aliases = &["e", "x"])]
-    Extract,
+    Extract(CommonArgs)
+}
+
+#[derive(Debug, StructOpt)]
+struct CommonArgs {
+        /// query terms must be matched IN ORDER
+        #[structopt(long, short)]
+        ordered: bool,
+        /// match ANY, rather than ALL, queries
+        #[structopt(long, short)]
+        any: bool,
+        /// Zipfile to search
+        zipfile: std::path::PathBuf,
+        /// Query to match
+        query: Vec<String>,
 }
 
 fn main() {
     let opts = Opts::from_args();
-    let ordered = opts.ordered;
-    let any = opts.any;
 
-    let command = match opts.command {
-        OptCommand::View => Command::View,
-        OptCommand::List => Command::List,
-        OptCommand::Choose => Command::Choose,
-        OptCommand::Extract => Command::Extract,
+    let (command, args) = match opts.command {
+        OptCommand::View(args) => (Command::View, args),
+        OptCommand::List(args) => (Command::List, args),
+        OptCommand::Choose(args) => (Command::Choose, args),
+        OptCommand::Extract(args) => (Command::Extract, args),
     };
+    let ordered = args.ordered;
+    let any = args.any;
+    let query = args.query;
+    let zipfile = args.zipfile;
 
-    let filter = Filter::new(any, ordered, opts.query);
+    let filter = Filter::new(any, ordered, query);
 
-    let matches = if let Ok(Some(m)) = filter.filter_zip_by_name(&opts.zipfile) {
+    let matches = if let Ok(Some(m)) = filter.filter_zip_by_name(&zipfile) {
         m
     } else {
         println!("No matching files in zipfile.");
         std::process::exit(1);
     };
 
-    if let Err(e) = command.execute(&matches, &opts.zipfile) {
+    if let Err(e) = command.execute(&matches, &zipfile) {
         println!("{}", e);
         std::process::exit(3);
     }
