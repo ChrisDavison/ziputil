@@ -1,6 +1,6 @@
 [package]
 name = "ziputil"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Chris Davison <c.jr.davison@gmail.com>"]
 edition = "2018"
 description = "Easily access or view specific files within a zip"
@@ -18,3 +18,4 @@ panic = 'abort'
 zip="0.6.6"
 anyhow = "1.0.80"
 structopt = "0.3.26"
+skim = "0.10.4"

@@ -25,7 +25,6 @@ impl Command {
                 utility::extract_files(zipfile, matches, &dir_out)
             },
             Command::Choose => {
-                Command::display_matches(matches)?;
                 let to_take = utility::choose_from_vector(matches)?;
                 let zip_name = zipfile
                     .file_name()
@@ -37,7 +36,6 @@ impl Command {
                 utility::extract_files(zipfile, &to_take[..], &dir_out)
             }
             Command::View => {
-                Command::display_matches(matches)?;
                 let to_take = utility::choose_from_vector(matches)?;
                 utility::display_files(zipfile, &to_take[..])
             }
